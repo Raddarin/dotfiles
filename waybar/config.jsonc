@@ -2,8 +2,16 @@
   "position": "top",
   "margin-top": 5,
   "modules-left": [
-    "hyprland/workspaces"
+    //"hyprland/workspaces"
+    "custom/workspaces"
   ],
+  "custom/workspaces": {
+    "format": "{}",
+    "return-type": "json",
+    "escape": false, // LIVSVIKTIGT för att Pango-taggarna ska fungera
+    "exec": "/home/Raddarin/.config/scripts/hypr-waybar-icons/target/release/hypr-waybar-icons",
+    "restart-interval": 0 // Vi behöver inte detta eftersom vi kör en listener
+  },
   "modules-center": [
     "clock"
   ],
@@ -53,7 +61,7 @@
   "network": {
     "format-wifi": " ",
     "format-ethernet": "{ipaddr}/{cidr} 󰊗",
-    "format-disconnected": "", //An empty format will hide the module.
+    "format-disconnected": "󰖪 ", //An empty format will hide the module.
     "tooltip-format": "{ifname} via {gwaddr} 󰊗",
     "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
     "tooltip-format-ethernet": "{ifname} ",

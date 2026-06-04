@@ -1,0 +1,11 @@
+/home/Raddarin/.config/hypr/scripts/compress_2/target/release/deps/convert_case-b3d574482cd8a690.d: /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/lib.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/boundary.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/case.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/converter.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/pattern.rs
+
+/home/Raddarin/.config/hypr/scripts/compress_2/target/release/deps/libconvert_case-b3d574482cd8a690.rlib: /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/lib.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/boundary.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/case.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/converter.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/pattern.rs
+
+/home/Raddarin/.config/hypr/scripts/compress_2/target/release/deps/libconvert_case-b3d574482cd8a690.rmeta: /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/lib.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/boundary.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/case.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/converter.rs /home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/pattern.rs
+
+/home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/lib.rs:
+/home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/boundary.rs:
+/home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/case.rs:
+/home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/converter.rs:
+/home/Raddarin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.10.0/src/pattern.rs:

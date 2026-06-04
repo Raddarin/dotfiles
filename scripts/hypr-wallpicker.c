@@ -147,7 +147,8 @@ int main(int argc, char **argv) {
 
           int cropX = (newW - imgSize) / 2;
           int cropY = (newH - imgSize) / 2;
-          ImageCrop(&img, (Rectangle){cropX, cropY, imgSize, imgSize});
+          ImageCrop(&img, (Rectangle){(float)cropX, (float)cropY,
+                                      (float)imgSize, (float)imgSize});
           ImageFormat(&img, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
           ImageAlphaMask(&img, hexMask);
 
@@ -179,7 +180,7 @@ int main(int argc, char **argv) {
   while (!WindowShouldClose()) {
     Vector2 mousePoint = GetMousePosition();
 
-    int COLS = 3;
+    int COLS = 5;
     float spacing = 15.0f;
     float stepX = 1.73205f * HEX_RADIUS + spacing;
     float stepY = 1.5f * HEX_RADIUS + spacing;
@@ -188,8 +189,6 @@ int main(int argc, char **argv) {
     float totalWidth = COLS * stepX;
     float totalHeight = (2.0f * HEX_RADIUS) + (totalRows - 1) * stepY;
 
-    // float startX = (GetScreenWidth() - totalWidth) / 2.0f;
-    // float startX = (GetScreenWidth() - totalWidth) / 2.0f + stepX / 2.0f;
     float offset =
         (stepX / 2.0f) / 2.0f; // Vi drar bort hälften av förskjutningen
     float startX = (GetScreenWidth() - totalWidth) / 2.0f + offset;
@@ -261,7 +260,7 @@ int main(int argc, char **argv) {
       unsigned char c = (unsigned char)wallpapers[i].currentColor;
       Color tint = (Color){c, c, c, 255};
 
-      Rectangle sourceRec = {0, 0, imgSize, imgSize};
+      Rectangle sourceRec = {0, 0, (float)imgSize, (float)imgSize};
       Rectangle destRec = {currentX, currentY, imgSize * scale,
                            imgSize * scale};
       Vector2 origin = {(imgSize * scale) / 2.0f, (imgSize * scale) / 2.0f};
@@ -282,7 +281,7 @@ int main(int argc, char **argv) {
       unsigned char c = (unsigned char)wallpapers[hoveredIndex].currentColor;
       Color tint = (Color){c, c, c, 255};
 
-      Rectangle sourceRec = {0, 0, imgSize, imgSize};
+      Rectangle sourceRec = {0, 0, (float)imgSize, (float)imgSize};
       Rectangle destRec = {currentX, currentY, imgSize * scale,
                            imgSize * scale};
       Vector2 origin = {(imgSize * scale) / 2.0f, (imgSize * scale) / 2.0f};

@@ -28,7 +28,16 @@ tooltip label {
   padding: 6px;
 }
 
-
+#custom-workspaces {
+    background-color: @color0;
+    opacity: 0.8;
+    padding: 5px 3px;
+    margin: 0 0 0 12px;
+    border-radius: 18px;
+    border: 1px solid @color1;
+    color: @foregrund;
+    transition: all 0.2s ease-in-out;
+}
 #workspaces {
   background-color: @color0;
   opacity: 0.8;
@@ -64,6 +73,8 @@ tooltip label {
   min-width: 50px;
   background-size: 400% 400%;
 }
+
+
 
 #custom-spell-check,
 #pulseaudio,
@@ -121,7 +132,7 @@ tooltip label {
     background-color: #ff0000; /* Orange */
     color: white;
 }
-#battery.warning.charging {
+#battery.charging {
     color: #a6e22e; /* Grön text */
     background-color: @background;
 }
