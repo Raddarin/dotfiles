@@ -47,6 +47,8 @@ fn generate_waybar_string() -> String {
                 final_title = "yazi".to_string();
             } else if client.title.to_lowercase().contains("nvim") {
                 final_title = "nvim".to_string();
+            } else if client.title.to_lowercase().contains("btop") {
+                final_title = "btop".to_string();
             }
         } else if client.class.contains("zathura") {
             final_title = "zathura".to_string();
@@ -56,13 +58,15 @@ fn generate_waybar_string() -> String {
             "vivaldi-stable" => "",
             "kitty" => "",
             "spotify" => "",
-            "mattermost.desktop" => "󰾆",
+            "mattermost-desktop" => "󰾆",
             "nvim" => "",
             "blueman-manager" => "",
             "yazi" => "",
-            "alacritty" => "",
+            "btop" => "",
             "firefox" => "",
             "zathura" => "󰰶",
+            "wofi" => "",
+            "localsend" => "󱥸",
             _ => "",
         };
 
@@ -81,6 +85,9 @@ fn generate_waybar_string() -> String {
         if let Some(icons) = workspace_map.get(id) {
             let icon_str = icons.join(" ");
             let content = format!("{}", icon_str);
+            if id.to_string() == "10" {
+                final_pango_text.push_str("<span color='#4C566A'>|</span>");
+            }
 
             if id.to_string() == active_id {
                 // Vi lägger till lite extra space inuti span för att bredda "bubblan"

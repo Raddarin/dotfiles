@@ -15,6 +15,7 @@ hyprctl hyprpaper wallpaper ",$1"
 
 # Om du startar om Waybar här, gör det med disown
 pkill waybar && waybar &
+eww reload &
 disown
 
 # #!/bin/bash

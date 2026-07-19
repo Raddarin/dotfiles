@@ -1,0 +1,11 @@
+width=400
+height=300
+location=center
+show=drun
+prompt=Sök program...
+filter_rate=100
+allow_images=true
+image_size=24
+term=foot
+key_up=Ctrl-k
+key_down=Ctrl-j

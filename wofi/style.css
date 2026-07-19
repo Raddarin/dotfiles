@@ -1,0 +1,48 @@
+@import "/home/Raddarin/.cache/wal/colors-waybar.css";
+
+window {
+    margin: 0px;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 16px;
+    background: transparent;
+    background-color: @background;
+    border: 2px solid @color4;
+    border-radius: 8px;
+}
+
+#outer-box {
+    margin: 5px;
+    background-color: @background;
+}
+
+#inner-box {
+    margin: 5px;
+    background-color: @background;
+}
+
+#input {
+    margin: 10px;
+    border: 1px solid @color6;
+    color: PYWAL_FG;
+    background-color: @foregrund;
+    border-radius: 50px;
+    padding: 5px;
+}
+
+#scroll {
+    margin: 5px;
+}
+
+#text {
+    margin: 5px;
+    color: @foregrund;
+}
+
+#entry:selected {
+    background-color: @color2;
+    border-radius: 8px;
+}
+
+#text:selected {
+    color: @foregrund;
+}

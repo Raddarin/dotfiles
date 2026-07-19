@@ -13,7 +13,9 @@
     "restart-interval": 0 // Vi behöver inte detta eftersom vi kör en listener
   },
   "modules-center": [
-    "clock"
+    "custom/powerbtn",
+    "clock",
+    "custom/tray"
   ],
   "modules-right": [
     "custom/spell-check",
@@ -34,6 +36,16 @@
     "format": "{name}",
     "on-click": "activate",
     "sort-by-number": true
+  },
+  "custom/powerbtn": {
+    "format": "󰐥",
+    "tooltip": false,
+    "on-click": "eww open --toggle power-menu & eww close app-tray"
+  },
+  "custom/tray": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "eww open --toggle app-tray & eww close power-menu"
   },
   //"custom/spell-check": {
   // "format": "󰓆 ",
@@ -70,7 +82,7 @@
     "on-click": "alacritty -e bash -ic 'nmtui'"
   },
   "custom/bluetooth": {
-    "exec": "~/.config/waybar/scripts/bluetooth_status.sh",
+    "exec": "~/.config/scripts/bluetooth_status.sh",
     "return-type": "json",
     "interval": 5,
     "on-click": "blueman-manager",
@@ -119,7 +131,7 @@
     "format": " {}",
     "tooltip": false,
     "interval": 5,
-    "on-click": "alacritty -e btop",
+    "on-click": "kitty btop",
     "exec": "free -h | awk '/Mem:/ {print $3}'"
   },
   "cpu": {
