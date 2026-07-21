@@ -29,23 +29,25 @@ tooltip label {
 }
 
 #custom-workspaces {
-    background-color: @color0;
-    opacity: 0.8;
-    padding: 5px 3px;
-    margin: 0 0 0 12px;
-    border-radius: 18px;
-    border: 1px solid @color1;
-    color: @foregrund;
-    transition: all 0.2s ease-in-out;
+  background-color: @color0;
+  opacity: 0.8;
+  padding: 5px 3px;
+  margin: 0 0 0 12px;
+  border-radius: 18px;
+  border: 2px solid @color4;
+  color: @foregrund;
+  transition: all 0.2s ease-in-out;
 }
+
 #workspaces {
   background-color: @color0;
   opacity: 0.8;
   padding: 5px 3px;
   margin: 0 0 0 12px;
   border-radius: 18px;
-  border: 1px solid @color1;
+  border: 1px solid @color4;
   color: @foregrund;
+
 }
 
 #workspaces buttons {
@@ -74,6 +76,26 @@ tooltip label {
   background-size: 400% 400%;
 }
 
+#custom-powerbtn,
+#clock,
+#custom-tray {
+  background-color: @background;
+  padding: 0 10px;
+  margin: 0;
+  /* Ingen marginal mellan modulerna */
+  border: none;
+  border-radius: 0;
+}
+
+.modules-center {
+  background-color: @background;
+  opacity: 0.8;
+  margin: 0 0px 0 0;
+  padding: 0 10px;
+  border-radius: 50px;
+  border: 2px solid @color4;
+}
+
 
 
 #custom-spell-check,
@@ -85,27 +107,42 @@ tooltip label {
 #cpu {
   background-color: @background;
   padding: 0 10px;
-  margin: 0; /* Ingen marginal mellan modulerna */
+  margin: 0;
+  /* Ingen marginal mellan modulerna */
   border: none;
   border-radius: 0;
 }
+
 .modules-right {
   background-color: @background;
   opacity: 0.8;
   margin: 0 12px 0 0;
   padding: 0 10px;
   border-radius: 50px;
-  border: 1px solid @color1;
+  border: 2px solid @color4;
+
 }
+
 #clock {
   color: @foregrund;
 }
+
+#custom-powerbtn {
+  color: @color4;
+}
+
+#custom-tray {
+  color: @color4
+}
+
 #custom-spell-check {
   color: @color4;
 }
+
 #pulseaudio {
   color: @color5;
 }
+
 #network {
   color: @color4;
 }
@@ -129,12 +166,15 @@ tooltip label {
 }
 
 #battery.warning {
-    background-color: #ff0000; /* Orange */
-    color: white;
+  background-color: #ff0000;
+  /* Orange */
+  color: white;
 }
+
 #battery.charging {
-    color: #a6e22e; /* Grön text */
-    background-color: @background;
+  color: #a6e22e;
+  /* Grön text */
+  background-color: @background;
 }
 
 #custom-ram {
@@ -144,4 +184,3 @@ tooltip label {
 #cpu {
   color: @color4;
 }
-
