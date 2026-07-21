@@ -102,7 +102,7 @@ tooltip label {
 #pulseaudio,
 #network,
 #battery,
-#custom-bluetooth,
+#bluetooth,
 #custom-ram,
 #cpu {
   background-color: @background;
@@ -147,16 +147,16 @@ tooltip label {
   color: @color4;
 }
 
-
-#custom-bluetooth.off {
+#bluetooth.off,
+#bluetooth.disabled {
   color: @color5;
 }
 
-#custom-bluetooth.on {
+#bluetooth.on {
   color: #dddddd;
 }
 
-#custom-bluetooth.connected {
+#bluetooth.connected {
   color: #7dd6ff;
 }
 

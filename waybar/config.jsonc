@@ -3,7 +3,7 @@
   "margin-top": 5,
   "modules-left": [
     //"hyprland/workspaces"
-    "custom/workspaces"
+    "custom/workspaces",
   ],
   "custom/workspaces": {
     "format": "{}",
@@ -18,18 +18,18 @@
     "custom/tray"
   ],
   "modules-right": [
-    "custom/spell-check",
+    //"custom/spell-check",
     "pulseaudio",
     "network",
-    "custom/bluetooth",
+    "bluetooth",
     "battery",
     "custom/ram",
-    "cpu"
+    "cpu",
   ],
   "clock": {
     "interval": 60,
     "tooltip": true,
-    "format": "{:%H.%M}",
+    "format": "{:%H:%M}",
     "tooltip-format": "{:%Y-%m-%d}"
   },
   "hyprland/workspaces": {
@@ -71,27 +71,40 @@
     "tooltip": false
   },
   "network": {
+    "version": 2, // Valfritt, men rekommenderas i nyare Waybar för nätverksdata
+    "interval": 1,
     "format-wifi": " ",
-    "format-ethernet": "{ipaddr}/{cidr} 󰊗",
+    "format-ethernet": "󰈀 ",
     "format-disconnected": "󰖪 ", //An empty format will hide the module.
     "tooltip-format": "{ifname} via {gwaddr} 󰊗",
     "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
-    "tooltip-format-ethernet": "{ifname} ",
+    "tooltip-format-ethernet": "⬇ {bandwidthDownBits} ⬆ {bandwidthUpBits}",
     "tooltip-format-disconnected": "Disconnected",
     "max-length": 50,
     "on-click": "alacritty -e bash -ic 'nmtui'"
   },
-  "custom/bluetooth": {
-    "exec": "~/.config/scripts/bluetooth_status.sh",
-    "return-type": "json",
+  "bluetooth": {
+    "format-on": "", // Visas på laptopen när BT är igång
+    "format-off": "󰂲", // Visas på laptopen om du stänger av BT
+    "format-connected": "",
+    "format-disabled": "󰂲", // 󰂲 = Struket B. Visas på PC:n eftersom BT saknas/är spärrat
+    "format-no-controller": "", // Säkerhetsåtgärd för PC:n (visar struket B om ingen hårdvara hittas)
     "interval": 5,
-    "on-click": "blueman-manager",
-    "on-click-right": "rfkill toggle bluetooth",
-    "tooltip": true
+    "tooltip-format": "{status}",
+    "on-click": "blueman-manager" // Eller din favorit-BT-manager
   },
+  // "custom/bluetooth": {
+  //   "exec": "~/.config/waybar/scripts/bluetooth_status.sh",
+  //   "return-type": "json",
+  //   "interval": 5,
+  //   "on-click": "blueman-manager",
+  //   "on-click-right": "rfkill toggle bluetooth",
+  //   "tooltip": true
+  // },
   "battery": {
     "interval": 60,
     "format": "{icon}",
+    "format-none": "", // VIKTIGT: Gömmer modulen helt på din PC (där batteri saknas)
     "states": {
       "warning": 10
     },

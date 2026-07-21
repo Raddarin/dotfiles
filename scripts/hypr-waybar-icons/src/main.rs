@@ -41,7 +41,6 @@ fn generate_waybar_string() -> String {
             continue;
         }
 
-        // Din ikon-logik
         if client.class == "kitty" {
             if client.title.to_lowercase().contains("yazi") {
                 final_title = "yazi".to_string();
@@ -69,11 +68,9 @@ fn generate_waybar_string() -> String {
             "localsend" => "󱥸",
             _ => "",
         };
+        let id = client.workspace.id as i32 % 10;
 
-        workspace_map
-            .entry(client.workspace.id)
-            .or_default()
-            .push(icon.to_string());
+        workspace_map.entry(id).or_default().push(icon.to_string());
     }
 
     let mut ws_ids: Vec<i32> = workspace_map.keys().cloned().collect();
@@ -81,6 +78,7 @@ fn generate_waybar_string() -> String {
 
     let mut final_pango_text = String::new();
     let total_ids = ws_ids.len();
+
     for (index, id) in ws_ids.iter().enumerate() {
         if let Some(icons) = workspace_map.get(id) {
             let icon_str = icons.join(" ");
@@ -90,21 +88,17 @@ fn generate_waybar_string() -> String {
             }
 
             if id.to_string() == active_id {
-                // Vi lägger till lite extra space inuti span för att bredda "bubblan"
                 final_pango_text.push_str(&format!("<span color='#7dd6ff'>  {}  </span>", content));
             } else {
                 final_pango_text.push_str(&format!("<span color='#D8DEE9'>  {}  </span>", content));
             }
 
             if index < total_ids - 1 {
-                // Du kan använda vanliga mellanslag eller ett vertikalt streck
                 final_pango_text.push_str("<span color='#4C566A'>|</span>");
-                //final_pango_text.push_str(" "); // Tre mellanslag för tydligt avstånd
             }
         }
     }
     let final_text = if final_pango_text.is_empty() {
-        // Detta visas när alla fönster är stängda - håller "ön" vid liv
         "<span color='#4C566A'>  </span>".to_string()
     } else {
         final_pango_text.trim().to_string()
@@ -125,7 +119,6 @@ fn get_active_workspace() -> String {
 
     if let Some(o) = output {
         let stdout = String::from_utf8_lossy(&o.stdout);
-        // Enkel parsing för att hitta ID i JSON-outputen
         if let Some(id_pos) = stdout.find("\"id\":") {
             let start = id_pos + 5;
             let end = stdout[start..]
@@ -142,7 +135,6 @@ fn main() -> hyprland::Result<()> {
 
     let mut event_listener = EventListener::new();
 
-    // Fix 2 & 3: Uppdaterade namn på handlers (opened/closed)
     event_listener.add_window_opened_handler(|_| {
         println!("{}", generate_waybar_string());
     });
