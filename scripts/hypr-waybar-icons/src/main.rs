@@ -66,10 +66,13 @@ fn generate_waybar_string() -> String {
             "zathura" => "󰰶",
             "wofi" => "",
             "localsend" => "󱥸",
+            "libreoffice-writer" => "󰷈",
             _ => "",
         };
-        let id = client.workspace.id as i32 % 10;
-
+        let mut id = client.workspace.id as i32 % 10;
+        if id == 0 {
+            id = 10;
+        }
         workspace_map.entry(id).or_default().push(icon.to_string());
     }
 

@@ -1,18 +1,19 @@
 #!/bin/bash
 
-requested=$1
+requested="${1:-0}"
 
-# SPECIALREGEL FÖR PAR 10 & 20: 
-# Gå hit direkt och strunta i all max_used-logik så att du alltid når dem!
+if ! [[ "$requested" =~ ^[0-9]+$ ]]; then
+	echo "Fel: Du måste ange ett giltigt nummer."
+	exit 1
+fi
+
+# SPECIALREGEL FÖR PAR 10 & 20
 if [ "$requested" -eq 10 ]; then
-	hyprctl dispatch movefocus l
-	hyprctl dispatch workspace 20
-	hyprctl dispatch movefocus r
-	hyprctl dispatch workspace 10
+	hyprctl dispatch 'hl.dsp.focus({ workspace = 10 })'
 	exit 0
 fi
 
-# (Resten av ditt skript förblir exakt likadant som innan...)
+# Räkna ut max_used
 max_used=$(hyprctl clients -j | jq '
   [ .[] | .workspace.id | 
     if (. >= 11 and . <= 19) then . - 10 
@@ -33,7 +34,5 @@ fi
 target_left=$((target_base + 10))
 target_right=$target_base
 
-hyprctl dispatch movefocus l
-hyprctl dispatch workspace "$target_left"
-hyprctl dispatch movefocus r
-hyprctl dispatch workspace "$target_right"
+# Utför workspace-bytena
+hyprctl dispatch 'hl.dsp.focus({ workspace = '$target_base' })'
