@@ -14,9 +14,13 @@ struct HyprClient {
 }
 
 fn move_to(workspace: i32, address: String) {
-    let target_arg = format!("{},address:{}", workspace, address);
+    let lua_cmd = format!(
+        "hl.dsp.window.move({{ workspace = {}, window = \"address:{}\", follow = false }})",
+        workspace, address
+    );
+
     let _output = Command::new("hyprctl")
-        .args(["dispatch", "movetoworkspacesilent", &target_arg])
+        .args(["dispatch", &lua_cmd])
         .output()
         .expect("Misslyckades att köra hyprctl");
 }

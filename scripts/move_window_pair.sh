@@ -10,4 +10,4 @@ else
 fi
 
 # Flytta fönstret till rätt workspace
-hyprctl dispatch 'hl.dsp.window.move({ workspace, follow, '$target' })'
+hyprctl dispatch 'hl.dsp.window.move({ workspace = "'$target'", follow = true })'
