@@ -51,6 +51,8 @@ fn generate_waybar_string() -> String {
             }
         } else if client.class.contains("zathura") {
             final_title = "zathura".to_string();
+        } else if client.class.contains("obsidian") {
+            final_title = "obsidian".to_string();
         }
 
         let icon = match final_title.to_lowercase().as_str() {
@@ -67,6 +69,7 @@ fn generate_waybar_string() -> String {
             "wofi" => "",
             "localsend" => "󱥸",
             "libreoffice-writer" => "󰷈",
+            "obsidian" => "",
             _ => "",
         };
         let mut id = client.workspace.id as i32 % 10;

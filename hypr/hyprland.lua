@@ -14,38 +14,36 @@
 ------------------
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
-hl.monitor {
-    output = "HDMI-A-1",
-    mode = "1920x1080@144",
-    position = "0x0",
-    scale = 1
-}
-
--- DP-2 (Höger skärm) placeras till höger om HDMI-A-1 med auto-right
-hl.monitor {
-    output = "DP-2",
-    mode = "1920x1080@165",
-    position = "1920x0",
-    scale = 1
-}
-
 hl.monitor({
-  output = "",
-  mode = "preferred",
-  position = "auto",
-  scale = 1,
+	output = "HDMI-A-1",
+	mode = "1920x1080@144",
+	position = "0x0",
+	scale = 1,
 })
 
+-- DP-2 (Höger skärm) placeras till höger om HDMI-A-1 med auto-right
+hl.monitor({
+	output = "DP-2",
+	mode = "1920x1080@165",
+	position = "1920x0",
+	scale = 1,
+})
 
+hl.monitor({
+	output = "",
+	mode = "preferred",
+	position = "auto",
+	scale = 1,
+})
 
 ---------------------
 ---- MY PROGRAMS ----
 ---------------------
 
 -- Set programs that you use
-local terminal = "kitty"
+local terminal = "kitty -o shell=fish"
 local fileManager = "kitty -e yazi"
-local menu = "wofi --show drun"
+local menu = "wofi --show drun -c ~/.config/wofi/config -s ~/.config/wofi/style.css"
 -------------------
 ---- AUTOSTART ----
 -------------------
@@ -58,14 +56,13 @@ local menu = "wofi --show drun"
 -- hl.on("hyprland.start", function ()
 --   hl.exec_cmd(terminal)
 --   hl.exec_cmd("nm-applet")
---   hl.exec_cmd("waybar & hyprpaper & firefox")
 -- end)
 hl.on("hyprland.start", function()
 	hl.exec_cmd("hyprpaper -c ~/.config/hypr/hyprpaper.conf")
-	hl.exec_cmd("waybar")
+	hl.exec_cmd("qs")
 	hl.exec_cmd("hypridle")
-	hl.exec_cmd(os.getenv("HOME") .. "/.config/scripts/compress_2/target/release/compress_2")
-	hl.exec_cmd("eww daemon")
+	-- Ge Hyprland 1 sekund att stabilisera sig innan ditt skript startar
+	hl.exec_cmd("sleep 1 && " .. os.getenv("HOME") .. "/.config/scripts/compress_2/target/release/compress_2")
 	hl.exec_cmd("wl-paste --type text --watch cliphist store")
 	hl.exec_cmd("wl-paste --type image --watch cliphist store")
 end)
@@ -198,11 +195,11 @@ hl.animation({ leaf = "zoomFactor", enabled = true, speed = 7, bezier = "quick" 
 --     rounding    = 0,
 -- })
 for i = 1, 10 do
-  hl.workspace_rule({workspace = tostring(i), monitor = "DP-2"})
+	hl.workspace_rule({ workspace = tostring(i), monitor = "DP-2" })
 end
 
 for i = 11, 20 do
-  hl.workspace_rule({workspace = tostring(i), monitor = "HDMI-A-1"})
+	hl.workspace_rule({ workspace = tostring(i), monitor = "HDMI-A-1" })
 end
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
@@ -327,12 +324,14 @@ hl.bind(mainMod .. " + SHIFT + up", hl.dsp.window.resize({ x = 0, y = -2000, rel
 
 hl.bind(mainMod .. " + SHIFT + down", hl.dsp.window.resize({ x = 0, y = 2000, relative = true }))
 
-
 for i = 1, 10 do
 	local key = i % 10
 	--hl.bind(mainMod .. " + " .. key, hl.dsp.exec_cmd("~/.config/scripts/goto_ws.sh " .. i))
-	hl.bind(mainMod .. " + " .. key, function() hl.dispatch(hl.dsp.focus({ workspace = i + 10 })) hl.dispatch(hl.dsp.focus({ workspace = i })) end)
-	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = key }))
+	hl.bind(mainMod .. " + " .. key, function()
+		hl.dispatch(hl.dsp.focus({ workspace = i + 10 }))
+		hl.dispatch(hl.dsp.focus({ workspace = i }))
+	end)
+	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
 -- Special workspace (Scratchpad)
@@ -347,14 +346,16 @@ hl.bind(mainMod .. " + Q", hl.dsp.focus({ workspace = "e-1" }))
 -- Egna skript
 hl.bind("Print", hl.dsp.exec_cmd(home .. "/.config/scripts/screenshot_area.sh"))
 hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(home .. "/.config/scripts/toggle_waybar.sh"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(home .. "/.config/scripts/wallpicker"))
-
+hl.bind(mainMod .. " + D", hl.dsp.global("quickshell:toggle_bar"))
 -- Byte av bakgrundsbild (1-7)
 
 -- Musbindningar för flytt/storlek
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+--fwiki
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("chromium --app=https://fwiki.se/wiki/Huvudsida --window-size=800,600"))
 
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind(

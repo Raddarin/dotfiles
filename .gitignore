@@ -7,5 +7,7 @@
 !nvim
 !waybar
 !scripts
+!obsidian
+!quickshell
 
 target/
