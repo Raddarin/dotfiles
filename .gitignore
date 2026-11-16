@@ -8,9 +8,7 @@
 !waybar
 !wofi
 !scripts
-!obsidian
 !quickshell
 !fish
 
 target/
-/quickshell/scripts/codes_new.json
