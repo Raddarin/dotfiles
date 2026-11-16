@@ -13,4 +13,4 @@
 !fish
 
 target/
-scripts/codes_new.json
+/quickshell/scripts/codes_new.json

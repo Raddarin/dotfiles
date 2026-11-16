@@ -11,7 +11,7 @@
 
 set -u
 
-CONFIG_FILE="${GCAL_CONFIG:-$HOME/.config/quickshell/scripts/codes_new.json}"
+CONFIG_FILE="${GCAL_CONFIG:-$HOME/.ssh/codes_new.json}"
 CACHE_FILE="${XDG_RUNTIME_DIR:-/tmp}/gcal_access_token.json"
 
 die() {
