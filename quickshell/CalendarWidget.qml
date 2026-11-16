@@ -1,276 +1,170 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Io
 
-// Månadskalender + dagsagenda, data hämtas från Google Calendar via gcalcli.
+// Kalendern. Standard: kompakt månadsvy. Knappen "Vecka" (eller ett klick på ett
+// veckonummer) fäller ut vecka + dag bredvid varandra. Allt tillstånd ligger i
+// CalendarData, så alla instanser visar samma kalender.
 Item {
     id: root
 
-    // Sätts utifrån: true när widgeten är synlig/expanderad (triggar hämtning)
+    // Sätts utifrån: true när widgeten är synlig/uppfälld
     property bool active: false
 
-    property date viewDate: new Date()      // månaden som visas
-    property date selectedDate: new Date()  // vald dag
-    property var events: ({})               // "YYYY-MM-DD" -> [{start, end, title, allDay}]
-    property string status: ""
+    // ---- Storlek (ändra här) ----
+    readonly property real monthW: 350          // kompakt månadsvy
+    readonly property real weekPanelW: 442      // veckovyn (36 + 7 * 58)
+    readonly property real dayPanelW: 320       // dagsvyn
+    readonly property real gap: 14
+    readonly property int bodyHeight: 440
 
-    readonly property var monthNames: ["Januari", "Februari", "Mars", "April", "Maj", "Juni",
-                                       "Juli", "Augusti", "September", "Oktober", "November", "December"]
-    readonly property var dayNames: ["Mån", "Tis", "Ons", "Tors", "Fre", "Lör", "Sön"]
+    readonly property bool weekMode: CalendarData.viewMode === "week"
 
-    implicitWidth: 300
+    implicitWidth: weekMode ? weekPanelW + gap + dayPanelW : monthW
     implicitHeight: col.implicitHeight
 
-    // ---------- Hjälpfunktioner ----------
-    function pad(n) { return n < 10 ? "0" + n : "" + n }
-    function keyOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) }
-
-    // Första cellen i rutnätet (måndag i veckan där månaden börjar)
-    function gridStart() {
-        var first = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1)
-        var offset = (first.getDay() + 6) % 7
-        return new Date(first.getFullYear(), first.getMonth(), 1 - offset)
-    }
-    function cellDate(i) {
-        var s = gridStart()
-        return new Date(s.getFullYear(), s.getMonth(), s.getDate() + i)
+    Component.onCompleted: if (active) CalendarData.acquire()
+    Component.onDestruction: if (active) CalendarData.release()
+    onActiveChanged: {
+        if (active) CalendarData.acquire()
+        else CalendarData.release()
     }
 
-    function changeMonth(delta) {
-        viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + delta, 1)
-        refresh()
-    }
-    function goToday() {
-        var now = new Date()
-        viewDate = new Date(now.getFullYear(), now.getMonth(), 1)
-        selectedDate = now
-        refresh()
-    }
-
-    function refresh() {
-        if (fetcher.running) return
-        var from = keyOf(cellDate(0))
-        var to = keyOf(cellDate(42))
-        fetcher.command = ["gcalcli", "--nocolor", "agenda", "--tsv", "--nodeclined", from, to]
-        status = "Hämtar…"
-        fetcher.running = true
-    }
-
-    // gcalcli --tsv: start_date, start_time, end_date, end_time, title
-    function parse(text) {
-        var map = {}
-        var lines = text.split("\n")
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i]
-            if (!line || line.indexOf("start_date") === 0) continue
-            var c = line.split("\t")
-            if (c.length < 5) continue
-            var k = c[0]
-            if (!map[k]) map[k] = []
-            map[k].push({
-                start: c[1],
-                end: c[3],
-                title: c[4],
-                allDay: c[1] === ""
-            })
-        }
-        events = map
-        status = ""
-    }
-
-    onActiveChanged: if (active) { goToday() }
-
-    // Uppdatera var 10:e minut medan widgeten är öppen
-    Timer {
-        interval: 600000
-        running: root.active
-        repeat: true
-        onTriggered: root.refresh()
-    }
-
-    Process {
-        id: fetcher
-        stdout: StdioCollector {
-            onStreamFinished: root.parse(text)
-        }
-        stderr: StdioCollector {
-            onStreamFinished: if (text.length > 0) root.status = "gcalcli-fel (kör 'gcalcli init')"
-        }
-    }
-
-    // ---------- UI ----------
     ColumnLayout {
         id: col
         anchors.left: parent.left
         anchors.right: parent.right
         spacing: 8
 
-        // Header: < Månad År >
+        // ---------- Header ----------
         RowLayout {
             Layout.fillWidth: true
+            Layout.preferredHeight: 30
+            spacing: 8
 
             Text {
                 text: "‹"
                 color: "#ffffff"
-                font.pixelSize: 18
+                font.pixelSize: 22
                 font.family: "JetBrains Mono, sans-serif"
                 MouseArea {
                     anchors.fill: parent
-                    anchors.margins: -6
-                    onClicked: root.changeMonth(-1)
-                }
-            }
-            Text {
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                text: root.monthNames[root.viewDate.getMonth()] + " " + root.viewDate.getFullYear()
-                color: "#ffffff"
-                font.pixelSize: 13
-                font.bold: true
-                font.family: "JetBrains Mono, sans-serif"
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: root.goToday()
+                    anchors.margins: -8
+                    onClicked: CalendarData.step(-1)
                 }
             }
             Text {
                 text: "›"
                 color: "#ffffff"
-                font.pixelSize: 18
+                font.pixelSize: 22
                 font.family: "JetBrains Mono, sans-serif"
                 MouseArea {
                     anchors.fill: parent
-                    anchors.margins: -6
-                    onClicked: root.changeMonth(1)
+                    anchors.margins: -8
+                    onClicked: CalendarData.step(1)
                 }
             }
-        }
+            Text {
+                Layout.fillWidth: true
+                text: CalendarData.titleText()
+                elide: Text.ElideRight
+                color: "#ffffff"
+                font.pixelSize: 15
+                font.bold: true
+                font.family: "JetBrains Mono, sans-serif"
+            }
 
-        // Veckodagar
-        Row {
-            Layout.fillWidth: true
-            Repeater {
-                model: root.dayNames
+            // Idag
+            Rectangle {
+                Layout.preferredWidth: 48
+                Layout.preferredHeight: 26
+                radius: 13
+                color: "transparent"
+                border.color: "#444444"
+                border.width: 1
                 Text {
-                    width: col.width / 7
-                    horizontalAlignment: Text.AlignHCenter
-                    text: modelData
-                    color: "#888888"
-                    font.pixelSize: 10
+                    anchors.centerIn: parent
+                    text: "Idag"
+                    color: "#ffffff"
+                    font.pixelSize: 12
                     font.family: "JetBrains Mono, sans-serif"
                 }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: CalendarData.goToday()
+                }
             }
-        }
 
-        // Datumrutnät (6 veckor)
-        Grid {
-            Layout.fillWidth: true
-            columns: 7
-            Repeater {
-                model: 42
-                Item {
-                    id: cell
-                    width: col.width / 7
-                    height: 30
-
-                    property date d: root.cellDate(index)
-                    property bool inMonth: d.getMonth() === root.viewDate.getMonth()
-                    property bool isToday: root.keyOf(d) === root.keyOf(new Date())
-                    property bool isSelected: root.keyOf(d) === root.keyOf(root.selectedDate)
-                    property bool hasEvents: (root.events[root.keyOf(d)] || []).length > 0
-
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: 26
-                        height: 26
-                        radius: 13
-                        color: cell.isSelected ? "#ffffff" : (cell.isToday ? "#333333" : "transparent")
-                    }
-                    Text {
-                        anchors.centerIn: parent
-                        text: cell.d.getDate()
-                        color: cell.isSelected ? "#000000" : (cell.inMonth ? "#ffffff" : "#555555")
-                        font.pixelSize: 12
-                        font.bold: cell.isToday
-                        font.family: "JetBrains Mono, sans-serif"
-                    }
-                    // Prick under dagar med event
-                    Rectangle {
-                        visible: cell.hasEvents
-                        width: 4
-                        height: 4
-                        radius: 2
-                        color: cell.isSelected ? "#000000" : "#4285F4"
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 1
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: root.selectedDate = cell.d
-                    }
+            // Växla: Vecka (expandera) / Månad (tillbaka)
+            Rectangle {
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 26
+                radius: 13
+                color: "#ffffff"
+                Text {
+                    anchors.centerIn: parent
+                    text: root.weekMode ? "Månad" : "Vecka"
+                    color: "#000000"
+                    font.pixelSize: 12
+                    font.bold: true
+                    font.family: "JetBrains Mono, sans-serif"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: CalendarData.setMode(root.weekMode ? "month" : "week")
                 }
             }
         }
 
-        // Avdelare
-        Rectangle {
-            Layout.fillWidth: true
-            height: 1
-            color: "#333333"
-        }
-
-        // Agenda för vald dag
+        // Felmeddelande från skriptet
         Text {
-            text: root.selectedDate.getDate() + " " + root.monthNames[root.selectedDate.getMonth()].toLowerCase()
-                  + (root.status ? "  · " + root.status : "")
-            color: "#888888"
+            Layout.fillWidth: true
+            visible: CalendarData.errorText !== ""
+            text: CalendarData.errorText
+            color: "#ff7777"
+            wrapMode: Text.WordWrap
+            maximumLineCount: 2
+            elide: Text.ElideRight
             font.pixelSize: 11
             font.family: "JetBrains Mono, sans-serif"
         }
 
-        Column {
+        // ---------- Body (fast höjd så att ön inte hoppar mellan vyerna) ----------
+        Item {
             Layout.fillWidth: true
-            spacing: 4
+            Layout.preferredHeight: root.bodyHeight
 
-            Text {
-                visible: dayEvents.count === 0 && root.status === ""
-                text: "Inga händelser"
-                color: "#555555"
-                font.pixelSize: 12
-                font.family: "JetBrains Mono, sans-serif"
+            MonthView {
+                visible: !root.weekMode
+                x: 0
+                width: root.monthW
+                height: parent.height
             }
 
-            Repeater {
-                id: dayEvents
-                model: root.events[root.keyOf(root.selectedDate)] || []
+            Item {
+                visible: root.weekMode
+                width: root.weekPanelW + root.gap + root.dayPanelW
+                height: parent.height
 
-                Row {
-                    spacing: 8
-                    Rectangle {
-                        width: 3
-                        height: 16
-                        radius: 1
-                        color: "#4285F4"
-                    }
-                    Text {
-                        text: modelData.allDay ? "Heldag" : modelData.start + "–" + modelData.end
-                        color: "#888888"
-                        font.pixelSize: 12
-                        font.family: "JetBrains Mono, sans-serif"
-                    }
-                    Text {
-                        width: col.width - 90
-                        text: modelData.title
-                        elide: Text.ElideRight
-                        color: "#ffffff"
-                        font.pixelSize: 12
-                        font.family: "JetBrains Mono, sans-serif"
-                    }
+                WeekView {
+                    x: 0
+                    width: root.weekPanelW
+                    height: parent.height
+                }
+
+                // Avdelare
+                Rectangle {
+                    x: root.weekPanelW + root.gap / 2
+                    width: 1
+                    height: parent.height
+                    color: "#222222"
+                }
+
+                DayView {
+                    x: root.weekPanelW + root.gap
+                    width: root.dayPanelW
+                    height: parent.height
                 }
             }
         }
-
-        Item { height: 4 }
     }
 }

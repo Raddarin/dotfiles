@@ -9,25 +9,24 @@ PanelWindow {
     anchors { top: true; left: true; right: true }
 
     property bool expanded: false
-    readonly property bool calendarOpen: expandedLoader.item ? expandedLoader.item.calendarOpen : false
 
-    // Ytan växer bara när kalendern är öppen
-    implicitHeight: 450
-    color: "transparent"
+    implicitHeight: 600                       // fast höjd (kalendern blir ~545 px hög)
+    color: "transparent"                      // utan den här blir fönstret vitt
 
-    // Reservera bara själva baren (5 px linje + 32 px), inte hela fönstret
-    exclusiveZone: expanded ? 37 : 0
+    exclusiveZone: expanded ? 37 : 0          // reservera bara själva baren, aldrig hela fönstret
     WlrLayershell.layer: WlrLayer.Top
 
+    // Växla mellan liten och utfälld bar
     GlobalShortcut {
         name: "toggle_bar"
         onPressed: window.expanded = !window.expanded
     }
 
-    // Klick tas bara emot på de synliga widgetarna
+    // Klick tas bara emot på de synliga widgetarna, resten släpps igenom till fönstren under
     mask: Region {
         regions: [
-            Region { item: window.expanded ? (expandedLoader.item ? expandedLoader.item.topLineItem : null) : minifiedLoader.item },
+            Region { item: window.expanded ? (expandedLoader.item ? expandedLoader.item.topLineItem : null)
+                                           : (minifiedLoader.item ? minifiedLoader.item.island : null) },
             Region { item: window.expanded && expandedLoader.item ? expandedLoader.item.leftItem : null },
             Region { item: window.expanded && expandedLoader.item ? expandedLoader.item.centerItem : null },
             Region { item: window.expanded && expandedLoader.item ? expandedLoader.item.rightItem : null }
@@ -38,10 +37,11 @@ PanelWindow {
         id: minifiedLoader
         active: !window.expanded
         anchors.top: parent.top
-        anchors.topMargin: 5                       // samma läge som förut (40 px ö i 50 px fönster)
+        anchors.topMargin: 5
         anchors.horizontalCenter: parent.horizontalCenter
         sourceComponent: ClockWidget {}
     }
+
     Loader {
         id: expandedLoader
         active: window.expanded

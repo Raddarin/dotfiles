@@ -5,22 +5,20 @@ Item {
     id: expandedBar
     anchors.fill: parent
 
-    property bool calendarOpen: false
-
-    // Exponeras så att fönstret kan bygga en klickmask
+    // Exponeras så att Bar.qml kan bygga en klickmask
     property alias topLineItem: topLine
     property alias leftItem: leftWidget
     property alias centerItem: centerWidget
     property alias rightItem: rightWidget
+
     // 1. Tunn linje längs skärmens överkant
     Rectangle {
         id: topLine
-        height: 8
+        height: 5
         color: "#000000"
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-
     }
 
     // 2. Vänster widget (Workspaces)
@@ -31,9 +29,9 @@ Item {
         anchors.top: topLine.bottom
         anchors.left: parent.left
         anchors.leftMargin: 0
-        
+
         color: "#000000"
-        
+
         topLeftRadius: 0
         topRightRadius: 0
         bottomLeftRadius: 0
@@ -50,79 +48,90 @@ Item {
                 font.family: "JetBrains Mono, sans-serif"
                 textFormat: Text.StyledText
             }
-
         }
     }
 
-        // 3. Mitten-widget (Klockan + expanderbar kalender)
-    Rectangle {
+    // 3. Mitten-widget (klockan, expanderar till kalendern)
+    Item {
         id: centerWidget
-        readonly property bool open: expandedBar.calendarOpen
-        
+        readonly property bool open: CalendarData.open
+
         height: open ? 32 + calendar.implicitHeight + 24 : 32
-        width: open ? 340 : centerLayout.implicitWidth + 68
+        width: open ? calendar.implicitWidth + 40 : centerLayout.implicitWidth + 68
         anchors.top: topLine.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        clip: true
 
-        color: "#000000"
-        topLeftRadius: 0
-        topRightRadius: 0
-        bottomLeftRadius: 16
-        bottomRightRadius: 16
-
-        Behavior on width  { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-        Behavior on height { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
-
-        // Klockraden (klickbar yta är bara de översta 32 px)
-        Item {
-            id: clockRow
-            width: parent.width
-            height: 32
-
-            MouseArea {
-                id: hoverArea
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: expandedBar.calendarOpen = !expandedBar.calendarOpen
-            }
-            Row {
-                id: centerLayout
-                anchors.centerIn: parent
-                spacing: 2
-                Text {
-                    text: Time.hoursMinutes
-                    color: "#ffffff"
-                    font.pixelSize: 14
-                    font.bold: true
-                    font.family: "JetBrains Mono, sans-serif"
-                }
-                Text {
-                    text: ":" + Time.seconds
-                    color: "#ffffff"
-                    font.pixelSize: 14
-                    font.bold: true
-                    font.family: "JetBrains Mono, sans-serif"
-                    visible: hoverArea.containsMouse
-                    opacity: hoverArea.containsMouse ? 1.0 : 0.0
-                    Behavior on opacity { NumberAnimation { duration: 150 } }
-                }
-            }
+        Behavior on width {
+            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        }
+        Behavior on height {
+            NumberAnimation { duration: 250; easing.type: Easing.OutCubic }
         }
 
-        CalendarWidget {
-            id: calendar
-            active: centerWidget.open
-            anchors.top: clockRow.bottom
-            anchors.topMargin: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 300
-            opacity: centerWidget.open ? 1 : 0
-            Behavior on opacity { NumberAnimation { duration: 200 } }
+        // Bakgrund med rundade nedre hörn (ritas separat från innehållet)
+        Rectangle {
+            anchors.fill: parent
+            color: "#000000"
+            topLeftRadius: 0
+            topRightRadius: 0
+            bottomLeftRadius: 16
+            bottomRightRadius: 16
+        }
+
+        Item {
+            anchors.fill: parent
+            clip: true
+
+            // Klockraden (klickbar yta är bara de översta 32 px)
+            Item {
+                id: clockRow
+                width: parent.width
+                height: 32
+
+                MouseArea {
+                    id: hoverArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: CalendarData.open = !CalendarData.open
+                }
+                Row {
+                    id: centerLayout
+                    anchors.centerIn: parent
+                    spacing: 2
+                    Text {
+                        text: Time.hoursMinutes
+                        color: "#ffffff"
+                        font.pixelSize: 14
+                        font.bold: true
+                        font.family: "JetBrains Mono, sans-serif"
+                    }
+                    Text {
+                        text: ":" + Time.seconds
+                        color: "#ffffff"
+                        font.pixelSize: 14
+                        font.bold: true
+                        font.family: "JetBrains Mono, sans-serif"
+                        visible: hoverArea.containsMouse
+                        opacity: hoverArea.containsMouse ? 1.0 : 0.0
+                        Behavior on opacity { NumberAnimation { duration: 150 } }
+                    }
+                }
+            }
+
+            CalendarWidget {
+                id: calendar
+                active: centerWidget.open
+                anchors.top: clockRow.bottom
+                anchors.topMargin: 4
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: implicitWidth
+                opacity: centerWidget.open ? 1 : 0
+                Behavior on opacity { NumberAnimation { duration: 200 } }
+            }
         }
     }
 
-        // 4. Höger widget (systeminfo + expanderande tooltip)
+    // 4. Höger widget (systeminfo + expanderande tooltip)
     Rectangle {
         id: rightWidget
         readonly property bool tipOpen: rightStatus.tip !== ""
